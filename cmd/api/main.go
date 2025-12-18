@@ -2,15 +2,14 @@ package main
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
 
 	"gagarin-soft/internal/auth"
 	"gagarin-soft/internal/config"
-	"gagarin-soft/internal/gmail"
+	"gagarin-soft/internal/handlers"
+	"gagarin-soft/internal/services"
 	"gagarin-soft/internal/storage"
 )
 
@@ -60,7 +59,11 @@ func main() {
 		repo = &storage.NoOpRepository{}
 	}
 
-	// 4. Define Handlers
+	// 4. Initialize Services and Handlers
+	gmailService := services.NewGmailWatchService(cfg, authManager, repo)
+	renewHandler := &handlers.RenewWatchHandler{Service: gmailService}
+
+	// 5. Define Handlers
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("POST /health", func(w http.ResponseWriter, r *http.Request) {
@@ -68,12 +71,9 @@ func main() {
 		w.Write([]byte("OK"))
 	})
 
-	mux.HandleFunc("POST /renew-watch", func(w http.ResponseWriter, r *http.Request) {
-		handleRenewWatch(w, r, cfg, authManager, repo)
-	})
+	mux.Handle("POST /renew-watch", renewHandler)
 
-
-	// 5. Start Server
+	// 6. Start Server
 	log.Printf("Starting server on :%s", cfg.Port)
 	server := &http.Server{
 		Addr:         ":" + cfg.Port,
@@ -85,68 +85,4 @@ func main() {
 	if err := server.ListenAndServe(); err != nil {
 		log.Fatalf("Server failed to start: %v", err)
 	}
-}
-
-type RenewWatchRequest struct {
-	TopicName string `json:"topicName"` // Optional override
-}
-
-func handleRenewWatch(w http.ResponseWriter, r *http.Request, cfg *config.Config, authMgr auth.TokenManager, repo storage.HistoryRepository) {
-	ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
-	defer cancel()
-
-	// 1. Parse Request (Optional topic override)
-	// Default: cfg.GmailPubSubTopic or constructed default
-	topicName := cfg.GmailPubSubTopic
-	if topicName == "" {
-		topicName = fmt.Sprintf("projects/%s/topics/gmail-hook-topic", cfg.ProjectID)
-	}
-
-	var reqBody RenewWatchRequest
-	if r.Body != nil {
-		_ = json.NewDecoder(r.Body).Decode(&reqBody)
-		if reqBody.TopicName != "" {
-			topicName = reqBody.TopicName
-		}
-	}
-
-	// 2. Get Refresh Token
-	// Secret Name: gmail-refresh-token
-	refreshToken, err := authMgr.GetRefreshToken(ctx, "gmail-refresh-token")
-	if err != nil {
-		log.Printf("Error retrieving refresh token: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-
-	// 3. Get Authenticated HTTP Client
-	client := authMgr.GetHTTPClient(ctx, refreshToken)
-
-	// 4. Create Gmail Client
-	gmailClient, err := gmail.NewClient(ctx, client)
-	if err != nil {
-		log.Printf("Error creating Gmail client: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-
-	// 5. Call Renew Watch
-	log.Printf("Renewing watch for topic: %s", topicName)
-	resp, err := gmailClient.RenewWatch(topicName)
-	if err != nil {
-		log.Printf("Error renewing watch: %v", err)
-		http.Error(w, fmt.Sprintf("Failed to renew watch: %v", err), http.StatusInternalServerError)
-		return
-	}
-
-	// 6. Log & Save Results
-	log.Printf("Successfully renewed watch. HistoryID: %d, Expiration: %d", resp.HistoryId, resp.Expiration)
-
-	if err := repo.SaveWatchStatus(ctx, resp.HistoryId, resp.Expiration); err != nil {
-		log.Printf("Warning: Failed to save watch status: %v", err)
-		// We don't fail the request here as the primary action succeeded
-	}
-
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(resp)
 }
