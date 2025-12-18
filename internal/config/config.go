@@ -13,12 +13,18 @@ type Config struct {
 	DBPass                 string
 	DBName                 string
 	InstanceConnectionName string
+	AppEnv                 string
+	GmailPubSubTopic       string
 }
 
 func Load() *Config {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
+	}
+	appEnv := os.Getenv("APP_ENV")
+	if appEnv == "" {
+		appEnv = "production"
 	}
 
 	return &Config{
@@ -30,5 +36,7 @@ func Load() *Config {
 		DBPass:                 os.Getenv("DB_PASS"),
 		DBName:                 os.Getenv("DB_NAME"),
 		InstanceConnectionName: os.Getenv("INSTANCE_CONNECTION_NAME"),
+		AppEnv:                 appEnv,
+		GmailPubSubTopic:       os.Getenv("GMAIL_PUBSUB_TOPIC"),
 	}
 }

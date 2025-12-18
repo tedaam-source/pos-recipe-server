@@ -13,20 +13,26 @@ import (
 	"golang.org/x/oauth2/google"
 )
 
-type Manager struct {
+type TokenManager interface {
+	GetRefreshToken(ctx context.Context, secretName string) (string, error)
+	GetHTTPClient(ctx context.Context, refreshToken string) *http.Client
+	Close() error
+}
+
+type GoogleManager struct {
 	secretsClient *secretmanager.Client
 	projectID     string
 	clientID      string
 	clientSecret  string
 }
 
-func NewManager(ctx context.Context, projectID, clientID, clientSecret string) (*Manager, error) {
+func NewGoogleManager(ctx context.Context, projectID, clientID, clientSecret string) (*GoogleManager, error) {
 	client, err := secretmanager.NewClient(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create secret manager client: %w", err)
 	}
 
-	return &Manager{
+	return &GoogleManager{
 		secretsClient: client,
 		projectID:     projectID,
 		clientID:      clientID,
@@ -34,12 +40,12 @@ func NewManager(ctx context.Context, projectID, clientID, clientSecret string) (
 	}, nil
 }
 
-func (m *Manager) Close() error {
+func (m *GoogleManager) Close() error {
 	return m.secretsClient.Close()
 }
 
 // GetRefreshToken retrieves the refresh token from Secret Manager
-func (m *Manager) GetRefreshToken(ctx context.Context, secretName string) (string, error) {
+func (m *GoogleManager) GetRefreshToken(ctx context.Context, secretName string) (string, error) {
 	name := fmt.Sprintf("projects/%s/secrets/%s/versions/latest", m.projectID, secretName)
 
 	req := &secretmanagerpb.AccessSecretVersionRequest{
@@ -62,7 +68,7 @@ func (m *Manager) GetRefreshToken(ctx context.Context, secretName string) (strin
 }
 
 // GetHTTPClient returns an authenticated HTTP client using the refresh token
-func (m *Manager) GetHTTPClient(ctx context.Context, refreshToken string) *http.Client {
+func (m *GoogleManager) GetHTTPClient(ctx context.Context, refreshToken string) *http.Client {
 	config := &oauth2.Config{
 		ClientID:     m.clientID,
 		ClientSecret: m.clientSecret,

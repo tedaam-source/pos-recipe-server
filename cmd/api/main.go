@@ -18,13 +18,22 @@ func main() {
 	// 1. Load Config
 	cfg := config.Load()
 
-	// 2. Initialize Auth Manager (Secret Manager)
+	// 2. Initialize Auth Manager
 	ctx := context.Background()
-	authManager, err := auth.NewManager(ctx, cfg.ProjectID, cfg.OAuthClientID, cfg.OAuthClientSecret)
-	if err != nil {
-		log.Fatalf("Failed to initialize auth manager: %v", err)
+	var authManager auth.TokenManager
+	var err error
+
+	if cfg.AppEnv == "local" {
+		log.Println("Initializing MOCK Auth Manager (local env)")
+		authManager = auth.NewMockManager()
+	} else {
+		log.Println("Initializing Google Cloud Auth Manager")
+		authManager, err = auth.NewGoogleManager(ctx, cfg.ProjectID, cfg.OAuthClientID, cfg.OAuthClientSecret)
+		if err != nil {
+			log.Fatalf("Failed to initialize auth manager: %v", err)
+		}
+		defer authManager.Close()
 	}
-	defer authManager.Close()
 
 	// 3. Initialize Storage
 	var repo storage.HistoryRepository
@@ -63,6 +72,7 @@ func main() {
 		handleRenewWatch(w, r, cfg, authManager, repo)
 	})
 
+
 	// 5. Start Server
 	log.Printf("Starting server on :%s", cfg.Port)
 	server := &http.Server{
@@ -81,14 +91,16 @@ type RenewWatchRequest struct {
 	TopicName string `json:"topicName"` // Optional override
 }
 
-func handleRenewWatch(w http.ResponseWriter, r *http.Request, cfg *config.Config, authMgr *auth.Manager, repo storage.HistoryRepository) {
+func handleRenewWatch(w http.ResponseWriter, r *http.Request, cfg *config.Config, authMgr auth.TokenManager, repo storage.HistoryRepository) {
 	ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
 	defer cancel()
 
 	// 1. Parse Request (Optional topic override)
-	// Default topic: projects/<projectID>/topics/gmail-hook-topic
-	// Note: In a real scenario, we might want to validate this strictly.
-	topicName := fmt.Sprintf("projects/%s/topics/gmail-hook-topic", cfg.ProjectID)
+	// Default: cfg.GmailPubSubTopic or constructed default
+	topicName := cfg.GmailPubSubTopic
+	if topicName == "" {
+		topicName = fmt.Sprintf("projects/%s/topics/gmail-hook-topic", cfg.ProjectID)
+	}
 
 	var reqBody RenewWatchRequest
 	if r.Body != nil {
