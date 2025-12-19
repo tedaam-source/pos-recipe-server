@@ -28,8 +28,13 @@ func Load() *Config {
 		appEnv = "production"
 	}
 
+	projectID := os.Getenv("GOOGLE_CLOUD_PROJECT")
+	if projectID == "" {
+		projectID = os.Getenv("GCP_PROJECT")
+	}
+
 	return &Config{
-		ProjectID:              os.Getenv("GOOGLE_CLOUD_PROJECT"),
+		ProjectID:              projectID,
 		OAuthClientID:          os.Getenv("OAUTH_CLIENT_ID"),
 		OAuthClientSecret:      os.Getenv("OAUTH_CLIENT_SECRET"),
 		Port:                   port,

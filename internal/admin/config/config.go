@@ -37,7 +37,7 @@ func Load() *Config {
 	}
 
 	return &Config{
-		ProjectID:              os.Getenv("GOOGLE_CLOUD_PROJECT"),
+		ProjectID:              getEnv("GOOGLE_CLOUD_PROJECT", "GCP_PROJECT"),
 		Port:                   port,
 		DBUser:                 os.Getenv("DB_USER"),
 		DBPass:                 getEnv("DB_PASSWORD", "DB_PASS"), // Support both
