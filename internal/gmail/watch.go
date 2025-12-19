@@ -25,8 +25,8 @@ func NewClient(ctx context.Context, httpClient *http.Client) (*Client, error) {
 }
 
 type WatchResponse struct {
-	HistoryId  uint64
-	Expiration int64
+	HistoryId  uint64 `json:"historyId,string"`
+	Expiration int64  `json:"expiration,string"`
 }
 
 func (c *Client) RenewWatch(topicName string) (*WatchResponse, error) {
