@@ -24,3 +24,6 @@ go.work
 server
 client_secret*.json
 tmp/
+
+# Security Lab (Vulnerable App)
+security-lab/
