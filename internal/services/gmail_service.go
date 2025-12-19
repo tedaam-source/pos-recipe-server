@@ -67,3 +67,101 @@ func (s *GmailWatchService) Renew(ctx context.Context) ([]byte, error) {
 
 	return json.Marshal(resp)
 }
+
+func (s *GmailWatchService) ProcessPushNotification(ctx context.Context, startHistoryID uint64) error {
+	// 1. Get Authenticated Client
+	refreshToken, err := s.AuthManager.GetRefreshToken(ctx, "gmail-refresh-token")
+	if err != nil {
+		return fmt.Errorf("failed to get refresh token: %w", err)
+	}
+	client := s.AuthManager.GetHTTPClient(ctx, refreshToken)
+	gmailClient, err := gmail.NewClient(ctx, client)
+	if err != nil {
+		return fmt.Errorf("failed to create gmail client: %w", err)
+	}
+
+	// 2. List History
+	msgIDs, err := gmailClient.ListMessageIDs(startHistoryID)
+	if err != nil {
+		return fmt.Errorf("failed to list history: %w", err)
+	}
+
+	log.Printf("Found %d messages in history", len(msgIDs))
+
+	// 3. Process Messages
+	targetLabel := s.Config.TargetGmailLabel
+
+	statsReceived := len(msgIDs)
+	statsOk := 0
+	statsError := 0
+
+	for _, msgID := range msgIDs {
+		msg, err := gmailClient.GetMessage(msgID)
+		if err != nil {
+			log.Printf("Failed to get message %s: %v", msgID, err)
+			statsError++
+			_ = s.Repo.RecordEvent(ctx, storage.Event{
+				MessageID: msgID,
+				Status:    "error",
+				Error:     fmt.Sprintf("Failed to get message: %v", err),
+			})
+			continue
+		}
+
+		matched := false
+		if targetLabel != "" {
+			for _, label := range msg.LabelIds {
+				if label == targetLabel {
+					matched = true
+					break
+				}
+			}
+		} else {
+			matched = true
+		}
+
+		if matched {
+			log.Printf("Message %s matched label %s. Saving...", msgID, targetLabel)
+
+			// Save using old logic
+			processed := storage.ProcessedEmail{
+				MessageID: msg.Id,
+				HistoryID: msg.HistoryId,
+				LabelIDs:  fmt.Sprintf("%v", msg.LabelIds),
+				Snippet:   msg.Snippet,
+			}
+			if err := s.Repo.SaveProcessedEmail(ctx, processed); err != nil {
+				log.Printf("Failed to save processed email: %v", err)
+				statsError++
+				_ = s.Repo.RecordEvent(ctx, storage.Event{
+					MessageID: msg.Id,
+					Status:    "error",
+					Error:     fmt.Sprintf("Failed to save to db: %v", err),
+				})
+			} else {
+				statsOk++
+				// Record Success Event for Admin Dashboard
+				_ = s.Repo.RecordEvent(ctx, storage.Event{
+					MessageID: msg.Id,
+					Status:    "processed",
+					// Assuming we can't get Filter ID easily unless we re-fetch filters.
+					// For now, leave FilterID empty or infer from label name if needed.
+				})
+			}
+		} else {
+			// Message didn't match, maybe log as filtered?
+			// Existing logic just ignores it.
+			// Admin dashboard might want to know about ignored messages too?
+			// For now, stick to processed ones to avoid spamming events.
+		}
+	}
+
+	// Update Daily Stats
+	if statsReceived > 0 || statsOk > 0 || statsError > 0 {
+		if err := s.Repo.UpdateDailyStats(ctx, statsReceived, statsOk, statsError); err != nil {
+			log.Printf("Failed to update daily stats: %v", err)
+		}
+	}
+
+	return nil
+}

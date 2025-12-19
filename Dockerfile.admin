@@ -1,0 +1,39 @@
+# Build Frontend
+FROM node:20-alpine AS builder-web
+WORKDIR /app/web
+COPY web/package.json web/package-lock.json ./
+RUN npm ci
+COPY web/ ./
+RUN npm run build
+
+# Build Backend
+FROM golang:1.24-alpine AS builder-go
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY cmd/ cmd/
+COPY internal/ internal/
+# Copy migrations if we want to run them on startup, or just to have them
+COPY migrations/ migrations/
+RUN CGO_ENABLED=0 GOOS=linux go build -o admin-service ./cmd/admin/main.go
+
+# Final Image
+FROM alpine:3.19
+WORKDIR /app
+RUN apk add --no-cache ca-certificates
+
+# Copy Binary
+COPY --from=builder-go /app/admin-service .
+# Copy Static Frontend
+COPY --from=builder-web /app/web/out ./web/out
+# Copy Migrations (optional if using external migration tool, but good practice to keep)
+COPY --from=builder-go /app/migrations ./migrations
+
+# Expose Port
+EXPOSE 8080
+
+# Environment variables to be overridden
+ENV PORT=8080
+ENV APP_ENV=production
+
+CMD ["./admin-service"]

@@ -5,7 +5,9 @@ go 1.24.0
 require (
 	cloud.google.com/go/cloudsqlconn v1.19.1
 	cloud.google.com/go/secretmanager v1.16.0
+	github.com/go-chi/chi/v5 v5.2.3
 	github.com/jackc/pgx/v5 v5.7.6
+	github.com/joho/godotenv v1.5.1
 	golang.org/x/oauth2 v0.34.0
 	google.golang.org/api v0.258.0
 	gorm.io/driver/postgres v1.6.0

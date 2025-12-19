@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/joho/godotenv"
+
 	"gagarin-soft/internal/auth"
 	"gagarin-soft/internal/config"
 	"gagarin-soft/internal/handlers"
@@ -14,6 +16,7 @@ import (
 )
 
 func main() {
+	_ = godotenv.Load() // Load .env for local dev
 	// 1. Load Config
 	cfg := config.Load()
 
@@ -62,6 +65,7 @@ func main() {
 	// 4. Initialize Services and Handlers
 	gmailService := services.NewGmailWatchService(cfg, authManager, repo)
 	renewHandler := &handlers.RenewWatchHandler{Service: gmailService}
+	pushHandler := &handlers.PushHandler{Service: gmailService}
 
 	// 5. Define Handlers
 	mux := http.NewServeMux()
@@ -72,6 +76,7 @@ func main() {
 	})
 
 	mux.Handle("POST /renew-watch", renewHandler)
+	mux.Handle("POST /gmail/push", pushHandler)
 
 	// 6. Start Server
 	log.Printf("Starting server on :%s", cfg.Port)

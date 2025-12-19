@@ -15,6 +15,7 @@ type Config struct {
 	InstanceConnectionName string
 	AppEnv                 string
 	GmailPubSubTopic       string
+	TargetGmailLabel       string
 }
 
 func Load() *Config {
@@ -38,5 +39,6 @@ func Load() *Config {
 		InstanceConnectionName: os.Getenv("INSTANCE_CONNECTION_NAME"),
 		AppEnv:                 appEnv,
 		GmailPubSubTopic:       os.Getenv("GMAIL_PUBSUB_TOPIC"),
+		TargetGmailLabel:       os.Getenv("TARGET_GMAIL_LABEL"),
 	}
 }

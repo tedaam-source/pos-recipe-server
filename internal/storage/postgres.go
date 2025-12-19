@@ -21,6 +21,15 @@ type GmailWatchHistory struct {
 	CreatedAt  time.Time
 }
 
+// TableName overrides the default pluralization if needed, though 'events' and 'stats_daily' are standard.
+func (Event) TableName() string {
+	return "events"
+}
+
+func (DailyStat) TableName() string {
+	return "stats_daily"
+}
+
 type PostgresRepository struct {
 	db *gorm.DB
 }
@@ -64,7 +73,7 @@ func NewPostgresRepository(ctx context.Context, instanceConnectionName, dbUser, 
 	}
 
 	// AutoMigrate
-	if err := gormDB.AutoMigrate(&GmailWatchHistory{}); err != nil {
+	if err := gormDB.AutoMigrate(&GmailWatchHistory{}, &ProcessedEmail{}); err != nil {
 		cleanup()
 		return nil, nil, fmt.Errorf("failed to migrate database: %w", err)
 	}
@@ -79,4 +88,38 @@ func (r *PostgresRepository) SaveWatchStatus(ctx context.Context, historyID uint
 		CreatedAt:  time.Now(),
 	}
 	return r.db.WithContext(ctx).Create(&entry).Error
+}
+
+func (r *PostgresRepository) SaveProcessedEmail(ctx context.Context, email ProcessedEmail) error {
+	if email.CreatedAt.IsZero() {
+		email.CreatedAt = time.Now()
+	}
+	return r.db.WithContext(ctx).Create(&email).Error
+}
+
+func (r *PostgresRepository) RecordEvent(ctx context.Context, event Event) error {
+	if event.CreatedAt.IsZero() {
+		event.CreatedAt = time.Now()
+	}
+	// 'events' table uses UUID default gen_random_uuid(), so we check if ID is empty, let DB handle it.
+	// However, GORM might try to insert zero value.
+	// Best to use a map or Omit ID if empty.
+	return r.db.WithContext(ctx).Omit("ID").Create(&event).Error
+}
+
+func (r *PostgresRepository) UpdateDailyStats(ctx context.Context, received, processedOk, processedError int) error {
+	day := time.Now().Format("2006-01-02")
+
+	// Atomic upsert via raw SQL because GORM upsert with increments is verbose
+	// "stats_daily" (day, received, processed_ok, processed_error, last_event_at)
+	query := `
+		INSERT INTO stats_daily (day, received, processed_ok, processed_error, last_event_at)
+		VALUES (?, ?, ?, ?, NOW())
+		ON CONFLICT (day) DO UPDATE SET
+			received = stats_daily.received + excluded.received,
+			processed_ok = stats_daily.processed_ok + excluded.processed_ok,
+			processed_error = stats_daily.processed_error + excluded.processed_error,
+			last_event_at = NOW();
+	`
+	return r.db.WithContext(ctx).Exec(query, day, received, processedOk, processedError).Error
 }

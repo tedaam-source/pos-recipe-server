@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS events;
+DROP TABLE IF EXISTS stats_daily;
+DROP TABLE IF EXISTS filters;
