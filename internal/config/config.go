@@ -28,7 +28,10 @@ func Load() *Config {
 		appEnv = "production"
 	}
 
-	projectID := os.Getenv("GOOGLE_CLOUD_PROJECT")
+	projectID := os.Getenv("PROJECT_ID")
+	if projectID == "" {
+		projectID = os.Getenv("GOOGLE_CLOUD_PROJECT")
+	}
 	if projectID == "" {
 		projectID = os.Getenv("GCP_PROJECT")
 	}
