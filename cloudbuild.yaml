@@ -1,9 +1,9 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/containers/server:latest', '.']
+    args: ['build', '-t', 'europe-west1-docker.pkg.dev/$PROJECT_ID/containers/pos-recipe-server:latest', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/containers/server:latest']
+    args: ['push', 'europe-west1-docker.pkg.dev/$PROJECT_ID/containers/pos-recipe-server:latest']
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
@@ -12,9 +12,9 @@ steps:
       - deploy
       - pos-recipe-server
       - --image
-      - us-central1-docker.pkg.dev/$PROJECT_ID/containers/server:latest
+      - europe-west1-docker.pkg.dev/$PROJECT_ID/containers/pos-recipe-server:latest
       - --region
-      - us-central1
+      - europe-west1
       - --platform
       - managed
       - --quiet
