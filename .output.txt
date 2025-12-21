@@ -1,0 +1,228 @@
+
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        12/21/2025  10:05 PM                .github
+d-----        12/21/2025  10:05 PM                .idea
+d-----        12/21/2025  10:05 PM                cmd
+d-----        12/21/2025  10:05 PM                internal
+d-----        12/21/2025  10:05 PM                migrations
+d-----        12/21/2025  10:05 PM                web
+-a----        12/21/2025  10:05 PM            456 .gitignore
+-a----        12/21/2025  10:05 PM       15391458 admin-service
+-a----        12/21/2025  10:05 PM       32754418 api
+-a----        12/21/2025  10:05 PM            597 cloudbuild.yaml
+-a----        12/21/2025  10:05 PM            866 docker-compose.yml
+-a----        12/21/2025  10:05 PM            794 Dockerfile
+-a----        12/21/2025  10:05 PM           1010 Dockerfile.admin
+-a----        12/21/2025  10:05 PM           2353 go.mod
+-a----        12/21/2025  10:05 PM          22277 go.sum
+-a----        12/21/2025  10:05 PM            163 Makefile
+-a----        12/21/2025  10:05 PM            208 README.md
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\.github
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        12/21/2025  10:05 PM                workflows
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\.github\workflows
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM            551 go.yml
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\.idea
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM            131 .gitignore
+-a----        12/21/2025  10:05 PM            558 dataSources.xml
+-a----        12/21/2025  10:05 PM            297 data_source_mapping.xml
+-a----        12/21/2025  10:05 PM            288 gagarin soft.iml
+-a----        12/21/2025  10:05 PM            283 modules.xml
+-a----        12/21/2025  10:05 PM            172 vcs.xml
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\cmd
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        12/21/2025  10:05 PM                admin
+d-----        12/21/2025  10:05 PM                api
+d-----        12/21/2025  10:05 PM                test-db
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\cmd\admin
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM           3252 main.go
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\cmd\api
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM           2453 main.go
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\cmd\test-db
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM            911 main.go
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        12/21/2025  10:05 PM                admin
+d-----        12/21/2025  10:05 PM                auth
+d-----        12/21/2025  10:05 PM                config
+d-----        12/21/2025  10:05 PM                controller
+d-----        12/21/2025  10:05 PM                entity
+d-----        12/21/2025  10:05 PM                gmail
+d-----        12/21/2025  10:05 PM                handlers
+d-----        12/21/2025  10:05 PM                infrastructure
+d-----        12/21/2025  10:05 PM                services
+d-----        12/21/2025  10:05 PM                storage
+d-----        12/21/2025  10:05 PM                usecase
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal\admin
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        12/21/2025  10:05 PM                config
+d-----        12/21/2025  10:05 PM                handlers
+d-----        12/21/2025  10:05 PM                middleware
+d-----        12/21/2025  10:05 PM                storage
+    Directory:
+    C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal\admin\config
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM           1507 config.go
+    Directory:
+    C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal\admin\handlers
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM           3570 handlers.go
+    Directory:
+    C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal\admin\middleware
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM           2077 iap.go
+    Directory:
+    C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal\admin\storage
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM           4903 storage.go
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal\auth
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM           2392 manager.go
+-a----        12/21/2025  10:05 PM            616 mock.go
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal\config
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM           1359 config.go
+    Directory:
+    C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal\controller
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        12/21/2025  10:05 PM                http
+    Directory:
+    C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal\controller\http
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM           1381 user.go
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal\entity
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM            249 user.go
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal\gmail
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM           1509 gmail.go
+-a----        12/21/2025  10:05 PM           1086 watch.go
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal\handlers
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM           1515 push_handler.go
+-a----        12/21/2025  10:05 PM            504 renew_handler.go
+-a----        12/21/2025  10:05 PM           2618 renew_handler_test.go
+    Directory:
+    C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal\infrastructure
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        12/21/2025  10:05 PM                memory
+d-----        12/21/2025  10:05 PM                repository
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal\infrastru
+    cture\memory
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM            732 user_repo.go
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal\infrastru
+    cture\repository
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM            706 user_repo.go
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal\services
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM           4859 gmail_service.go
+-a----        12/21/2025  10:05 PM           2880 gmail_service_test.go
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal\storage
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        12/21/2025  10:05 PM                mocks
+-a----        12/21/2025  10:05 PM           3860 postgres.go
+-a----        12/21/2025  10:05 PM           1603 repository.go
+    Directory:
+    C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal\storage\mocks
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM           1377 repository.go
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal\usecase
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        12/21/2025  10:05 PM                repo
+-a----        12/21/2025  10:05 PM            764 user.go
+    Directory:
+    C:\Users\tedaa\IdeaProjects\pos-recipe-server\internal\usecase\repo
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM            292 user_repo.go
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\migrations
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM             96 001_initial_admin_tables.down
+                                                  .sql
+-a----        12/21/2025  10:05 PM            990 001_initial_admin_tables.up.s
+                                                  ql
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\web
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        12/21/2025  10:05 PM                app
+d-----        12/21/2025  10:05 PM                lib
+d-----        12/21/2025  10:05 PM                public
+-a----        12/21/2025  10:05 PM            521 .gitignore
+-a----        12/21/2025  10:05 PM            483 eslint.config.mjs
+-a----        12/21/2025  10:05 PM            517 next.config.ts
+-a----        12/21/2025  10:05 PM         250997 package-lock.json
+-a----        12/21/2025  10:05 PM            694 package.json
+-a----        12/21/2025  10:05 PM            101 postcss.config.mjs
+-a----        12/21/2025  10:05 PM           1486 README.md
+-a----        12/21/2025  10:05 PM            700 tsconfig.json
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\web\app
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        12/21/2025  10:05 PM                dashboard
+d-----        12/21/2025  10:05 PM                events
+d-----        12/21/2025  10:05 PM                filters
+-a----        12/21/2025  10:05 PM          25931 favicon.ico
+-a----        12/21/2025  10:05 PM            514 globals.css
+-a----        12/21/2025  10:05 PM           2081 layout.tsx
+-a----        12/21/2025  10:05 PM            111 page.tsx
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\web\app\dashboard
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM           3178 page.tsx
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\web\app\events
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM           3589 page.tsx
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\web\app\filters
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM           7091 page.tsx
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\web\lib
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM            174 utils.ts
+    Directory: C:\Users\tedaa\IdeaProjects\pos-recipe-server\web\public
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        12/21/2025  10:05 PM            391 file.svg
+-a----        12/21/2025  10:05 PM           1035 globe.svg
+-a----        12/21/2025  10:05 PM           1375 next.svg
+-a----        12/21/2025  10:05 PM            128 vercel.svg
+-a----        12/21/2025  10:05 PM            385 window.svg
