@@ -1,13 +1,11 @@
 logsBucket: gs://mail-hooks-cloudbuild-logs-33239832912
 
 steps:
-  - name: gcr.io/cloud-builders/docker
+  - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'europe-west1-docker.pkg.dev/$PROJECT_ID/containers/pos-recipe-server:latest', '.']
-
-  - name: gcr.io/cloud-builders/docker
+  - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'europe-west1-docker.pkg.dev/$PROJECT_ID/containers/pos-recipe-server:latest']
-
-  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
       - run
@@ -22,4 +20,4 @@ steps:
       - --quiet
 
 options:
-  logging: CLOUD_LOGGING_ONLY
+  dynamicSubstitutions: true
