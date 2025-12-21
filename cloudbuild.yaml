@@ -1,21 +1,23 @@
 steps:
-  # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/server', '.']
-  # Push the container image
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/containers/server:latest', '.']
+
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/server']
-  # Deploy container image to Cloud Run
+    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/containers/server:latest']
+
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
-      - 'run'
-      - 'deploy'
-      - 'pos-recipe-server'
-      - '--image'
-      - 'gcr.io/$PROJECT_ID/server'
-      - '--region'
-      - 'us-central1'
+      - run
+      - deploy
+      - pos-recipe-server
+      - --image
+      - us-central1-docker.pkg.dev/$PROJECT_ID/containers/server:latest
+      - --region
+      - us-central1
+      - --platform
+      - managed
+      - --quiet
 
 options:
   logging: CLOUD_LOGGING_ONLY
